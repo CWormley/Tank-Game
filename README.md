@@ -3,8 +3,8 @@
 
 | Student Information |                |
 |:-------------------:|----------------|
-|  Student Name       |   Name Here    |
-|  Student Email      |   Email Here   |
+|  Student Name       |  Claudia Wormley   |
+|  Student Email      |  cwormley@sfsu.edu   |
 
 
 ## Purpose of jar Folder 
