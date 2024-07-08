@@ -17,8 +17,8 @@ public class Tank{
     private float vy;
     private float angle;
 
-    private float R = 5;
-    private float ROTATIONSPEED = 3.0f;
+    private float R = 3;
+    private float ROTATIONSPEED = 2.0f;
 
     private BufferedImage img;
     private boolean UpPressed;
@@ -142,9 +142,7 @@ public class Tank{
         rotation.rotate(Math.toRadians(angle), this.img.getWidth() / 2.0, this.img.getHeight() / 2.0);
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(this.img, rotation, null);
-        g2d.setColor(Color.RED);
         //g2d.rotate(Math.toRadians(angle), bounds.x + bounds.width/2, bounds.y + bounds.height/2);
-        g2d.drawRect((int)x,(int)y,this.img.getWidth(), this.img.getHeight());
 
     }
 }
