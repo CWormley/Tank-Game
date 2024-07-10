@@ -29,13 +29,13 @@ public class StartMenuPanel extends JPanel {
 
         JButton start = new JButton("Start");
         start.setFont(new Font("Courier New", Font.BOLD, 24));
-        start.setBounds(150, 300, 150, 50);
+        start.setBounds(150, 610, 150, 50);
         start.addActionListener(actionEvent -> this.lf.setFrame("game"));
 
         JButton exit = new JButton("Exit");
         exit.setSize(new Dimension(200, 100));
         exit.setFont(new Font("Courier New", Font.BOLD, 24));
-        exit.setBounds(150, 400, 150, 50);
+        exit.setBounds(407, 610, 150, 50);
         exit.addActionListener((actionEvent -> this.lf.closeGame()));
 
         this.add(start);
