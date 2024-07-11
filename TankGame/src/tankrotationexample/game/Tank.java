@@ -120,14 +120,14 @@ public class Tank{
         if (x < 30) {
             x = 30;
         }
-        if (x >= GameConstants.GAME_SCREEN_WIDTH - 88) {
-            x = GameConstants.GAME_SCREEN_WIDTH - 88;
+        if (x >= GameConstants.GAME_SCREEN_WIDTH - 110) {
+            x = GameConstants.GAME_SCREEN_WIDTH - 110;
         }
         if (y < 40) {
             y = 40;
         }
-        if (y >= GameConstants.GAME_SCREEN_HEIGHT - 80) {
-            y = GameConstants.GAME_SCREEN_HEIGHT - 80;
+        if (y >= GameConstants.GAME_SCREEN_HEIGHT - 100) {
+            y = GameConstants.GAME_SCREEN_HEIGHT - 100;
         }
     }
 
@@ -138,7 +138,6 @@ public class Tank{
 
 
     void drawImage(Graphics g) {
-        g.clearRect(0, 0, GameConstants.GAME_SCREEN_WIDTH, GameConstants.GAME_SCREEN_HEIGHT);
         AffineTransform rotation = AffineTransform.getTranslateInstance(x, y);
         rotation.scale(.5,.5);
         rotation.rotate(Math.toRadians(angle), this.img.getWidth() / 2.0, this.img.getHeight() / 2.0);
