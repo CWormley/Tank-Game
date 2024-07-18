@@ -15,17 +15,21 @@ public class ResourceManager {
     private final static Map<String, BufferedImage> sprites = new HashMap<>();
     private final static Map<String, Clip> sounds = new HashMap<>();
     private final static Map<String, List<BufferedImage>> animations = new HashMap<>();
+    //ResourcePool<Wall> wallPool = new ResourcePool<>();
 
     private static BufferedImage loadSprite(String path) throws IOException {
         return ImageIO.read(Objects.requireNonNull(
                 ResourceManager.class.getClassLoader().getResource(path),
-                "Resource not found: " + path));
+                "Resource %s was not found: ".formatted(path)));
     }
     private static void initSprites() throws IOException {
         ResourceManager.sprites.put("tank1", loadSprite("tank1.png"));
         ResourceManager.sprites.put("tank2", loadSprite("tank2.png"));
         ResourceManager.sprites.put("title", loadSprite("title.png"));
         ResourceManager.sprites.put("background", loadSprite("background.png"));
+        ResourceManager.sprites.put("wall1", loadSprite("wall1.png"));
+        ResourceManager.sprites.put("wall2", loadSprite("wall2.png"));
+
 
     }
 

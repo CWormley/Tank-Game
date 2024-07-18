@@ -9,8 +9,13 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -24,6 +29,7 @@ public class GameWorld extends JPanel implements Runnable {
     private final Launcher lf;
     private long tick = 0;
 
+    ArrayList<GameObject> gObjs = new ArrayList<>();
     private BufferedImage background;
 
     /**
@@ -69,6 +75,29 @@ public class GameWorld extends JPanel implements Runnable {
         this.world = new BufferedImage(GameConstants.GAME_SCREEN_WIDTH,
                 GameConstants.GAME_SCREEN_HEIGHT,
                 BufferedImage.TYPE_INT_RGB);
+
+
+        int row = 0;
+        InputStreamReader isr = new InputStreamReader
+                (Objects.requireNonNull(
+                        GameWorld.class.getClassLoader().getResourceAsStream("map1.csv")
+                ));
+        try(BufferedReader mapReader = new BufferedReader(isr)){
+            while(mapReader.ready()){
+                String line = mapReader.readLine();
+                String[] obj = line.split(",");
+                for(int col = 0; col < obj.length; col++){
+                    String gameItem = obj[col];
+                    if(gameItem.equals("0")){continue;}
+                    this.gObjs.add(GameObject.newInstance(gameItem, col * 40, row * 40));
+                }
+                row++;
+            }
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
+
+
         t1 = new Tank(30, 182, 0, 0, (short) 0, ResourceManager.getSprite("tank1"));
         TankControl tc1 = new TankControl(t1, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_SPACE);
         this.lf.getJf().addKeyListener(tc1);
@@ -80,14 +109,34 @@ public class GameWorld extends JPanel implements Runnable {
         background = ResourceManager.getSprite("background");
     }
 
+    private void displayMiniMap(Graphics2D onScreenPanel) {
+        BufferedImage miniMap = this.world.getSubimage(0,0, GameConstants.GAME_WORLD_WIDTH, GameConstants.GAME_WORLD_HEIGHT);
+        AffineTransform scaler = AffineTransform.getTranslateInstance(GameConstants.GAME_SCREEN_WIDTH/2-(GameConstants.GAME_WORLD_WIDTH*.15)/2, 0);
+        scaler.scale(0.15, 0.15);
+        onScreenPanel.drawImage(miniMap, scaler,null);
+    }
+
+    private void displaySplitScreen(Graphics2D onScreenPanel){
+        BufferedImage lh = this.world.getSubimage((int)this.t1.x, (int)this.t1.y, GameConstants.GAME_SCREEN_WIDTH/2, GameConstants.GAME_SCREEN_HEIGHT);
+        onScreenPanel.drawImage(lh, 0, 0, null);
+    }
+
     @Override
     public void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         Graphics2D buffer = world.createGraphics();
         super.paintComponent(g2);
         buffer.drawImage(background, 0, 0, null);
+        for(int i = 0; i < this.gObjs.size(); i++){
+            this.gObjs.get(i).draw(buffer);
+        }
         this.t1.drawImage(buffer);
         this.t2.drawImage(buffer);
-        g2.drawImage(world, 0, 0, null);
+        //this.displaySplitScreen(g2);
+        this.displayMiniMap(g2);
     }
+
+
+
+
 }

@@ -11,8 +11,8 @@ import java.awt.image.BufferedImage;
  */
 public class Tank{
 
-    private float x;
-    private float y;
+    public float x;
+    public float y;
     private float vx;
     private float vy;
     private float angle;
@@ -126,8 +126,8 @@ public class Tank{
         if (y < 40) {
             y = 40;
         }
-        if (y >= GameConstants.GAME_SCREEN_HEIGHT - 100) {
-            y = GameConstants.GAME_SCREEN_HEIGHT - 100;
+        if (y >= GameConstants.GAME_SCREEN_HEIGHT - 130) {
+            y = GameConstants.GAME_SCREEN_HEIGHT - 130;
         }
     }
 
