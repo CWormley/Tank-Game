@@ -72,8 +72,8 @@ public class GameWorld extends JPanel implements Runnable {
      * initial state as well.
      */
     public void InitializeGame() {
-        this.world = new BufferedImage(GameConstants.GAME_SCREEN_WIDTH,
-                GameConstants.GAME_SCREEN_HEIGHT,
+        this.world = new BufferedImage(GameConstants.GAME_WORLD_WIDTH,
+                GameConstants.GAME_WORLD_HEIGHT,
                 BufferedImage.TYPE_INT_RGB);
 
 
@@ -98,11 +98,11 @@ public class GameWorld extends JPanel implements Runnable {
         }
 
 
-        t1 = new Tank(30, 182, 0, 0, (short) 0, ResourceManager.getSprite("tank1"));
+        t1 = new Tank(45, 80, 0, 0, (short) 0, ResourceManager.getSprite("tank1"));
         TankControl tc1 = new TankControl(t1, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_SPACE);
         this.lf.getJf().addKeyListener(tc1);
 
-        t2 = new Tank(690, 558, 0, 0, (short) 180, ResourceManager.getSprite("tank2"));
+        t2 = new Tank(1875, 80, 0, 0, (short) 180, ResourceManager.getSprite("tank2"));
         TankControl tc2 = new TankControl(t2, KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_ENTER);
         this.lf.getJf().addKeyListener(tc2);
 
@@ -117,8 +117,10 @@ public class GameWorld extends JPanel implements Runnable {
     }
 
     private void displaySplitScreen(Graphics2D onScreenPanel){
-        BufferedImage lh = this.world.getSubimage((int)this.t1.x, (int)this.t1.y, GameConstants.GAME_SCREEN_WIDTH/2, GameConstants.GAME_SCREEN_HEIGHT);
+        BufferedImage lh = this.world.getSubimage((int)this.t1.getScreen_x(), (int)this.t1.getScreen_y(), GameConstants.GAME_SCREEN_WIDTH/2, GameConstants.GAME_SCREEN_HEIGHT);
         onScreenPanel.drawImage(lh, 0, 0, null);
+        BufferedImage rh = this.world.getSubimage((int)this.t2.getScreen_x(), (int)this.t2.getScreen_y(), GameConstants.GAME_SCREEN_WIDTH/2, GameConstants.GAME_SCREEN_HEIGHT);
+        onScreenPanel.drawImage(rh, GameConstants.GAME_SCREEN_WIDTH/2+4, 0, null);
     }
 
     @Override
@@ -132,8 +134,11 @@ public class GameWorld extends JPanel implements Runnable {
         }
         this.t1.drawImage(buffer);
         this.t2.drawImage(buffer);
-        //this.displaySplitScreen(g2);
+
+        this.displaySplitScreen(g2);
         this.displayMiniMap(g2);
+
+
     }
 
 

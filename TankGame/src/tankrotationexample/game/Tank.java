@@ -11,8 +11,10 @@ import java.awt.image.BufferedImage;
  */
 public class Tank{
 
-    public float x;
-    public float y;
+    private float x;
+    private float y;
+    private float screen_x;
+    private float screen_y;
     private float vx;
     private float vy;
     private float angle;
@@ -29,10 +31,20 @@ public class Tank{
     Tank(float x, float y, float vx, float vy, float angle, BufferedImage img) {
         this.x = x;
         this.y = y;
+        this.screen_x = x;
+        this.screen_y = y;
         this.vx = vx;
         this.vy = vy;
         this.img = img;
         this.angle = angle;
+    }
+
+    public float getScreen_x() {
+        return screen_x;
+    }
+
+    public float getScreen_y() {
+        return screen_y;
     }
 
     void setX(float x){ this.x = x; }
@@ -88,7 +100,7 @@ public class Tank{
             this.rotateRight();
         }
 
-
+        centerScreen();
     }
 
     private void rotateLeft() {
@@ -115,19 +127,38 @@ public class Tank{
         checkBorder();
     }
 
+    private void centerScreen(){
+        this.screen_x = this.x - GameConstants.GAME_SCREEN_WIDTH/4f;
+        this.screen_y = this.y - GameConstants.GAME_SCREEN_HEIGHT/2f;
+
+
+        if(this.screen_x < 0) {screen_x = 0;}
+        if(this.screen_y < 0) {screen_y = 0;}
+
+
+        if(this.screen_x >GameConstants.GAME_WORLD_WIDTH - GameConstants.GAME_SCREEN_WIDTH/2) {
+            this.screen_x = GameConstants.GAME_WORLD_WIDTH - GameConstants.GAME_SCREEN_WIDTH / 2;
+        }
+        if(this.screen_y > GameConstants.GAME_WORLD_HEIGHT - GameConstants.GAME_SCREEN_HEIGHT) {
+            this.screen_y = GameConstants.GAME_WORLD_HEIGHT - GameConstants.GAME_SCREEN_HEIGHT;
+        }
+
+
+    }
+
 
     private void checkBorder() {
         if (x < 30) {
             x = 30;
         }
-        if (x >= GameConstants.GAME_SCREEN_WIDTH - 110) {
-            x = GameConstants.GAME_SCREEN_WIDTH - 110;
+        if (x >= GameConstants.GAME_WORLD_WIDTH - 110) {
+            x = GameConstants.GAME_WORLD_WIDTH - 110;
         }
         if (y < 40) {
             y = 40;
         }
-        if (y >= GameConstants.GAME_SCREEN_HEIGHT - 130) {
-            y = GameConstants.GAME_SCREEN_HEIGHT - 130;
+        if (y >= GameConstants.GAME_WORLD_HEIGHT - 130) {
+            y = GameConstants.GAME_WORLD_HEIGHT - 130;
         }
     }
 

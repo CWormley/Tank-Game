@@ -10,6 +10,10 @@ public abstract class GameObject {
         return switch (type) {
             case "3", "9" -> new Wall(x, y, ResourceManager.getSprite("wall1"));
             case "8" -> new Wall(x, y, ResourceManager.getSprite("wall2"));
+            case "7" -> new UBWall(x, y, ResourceManager.getSprite("wall3"));
+            case "5" -> new Flower(x, y, ResourceManager.getSprite("flower"));
+            case "6" -> new Star(x, y, ResourceManager.getSprite("star"));
+            case "4" -> new Grass (x, y, ResourceManager.getSprite("grass"));
             default -> throw new IllegalArgumentException("Unsupported type _> %s\n".formatted(type));
 
         };
