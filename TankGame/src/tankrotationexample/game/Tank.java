@@ -1,9 +1,14 @@
 package tankrotationexample.game;
 
 import tankrotationexample.GameConstants;
+import tankrotationexample.ResourceManager;
+import tankrotationexample.ResourcePools;
+
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -27,6 +32,12 @@ public class Tank{
     private boolean DownPressed;
     private boolean RightPressed;
     private boolean LeftPressed;
+    private boolean shootPressed;
+
+    private long coolDown  = 500;
+    private long lastShot = 0;
+    List<Bullet> ammo = new ArrayList<Bullet>();
+
 
     Tank(float x, float y, float vx, float vy, float angle, BufferedImage img) {
         this.x = x;
@@ -83,6 +94,16 @@ public class Tank{
         this.LeftPressed = false;
     }
 
+    void toggleShoot() {
+        this.shootPressed = true;
+    }
+
+    void unToggleShoot() {
+        this.shootPressed = false;
+    }
+
+
+
     void update() {
         if (this.UpPressed) {
             this.moveForwards();
@@ -100,8 +121,26 @@ public class Tank{
             this.rotateRight();
         }
 
+        long currentTime = System.currentTimeMillis();
+        if (this.shootPressed && currentTime > this.coolDown + this.lastShot) {
+            this.lastShot = currentTime;
+            var p = ResourcePools.getPooledInstance("bullet");
+            p.initObject(x +this.img.getWidth()/4f,y +this.img.getHeight()/4f,angle);
+            this.ammo.add((Bullet)p);
+        }
+
+        for(int i = 0; i < ammo.size(); i++){
+            if(ammo.get(i).colision) {
+                ammo.remove(ammo.get(i));
+                break;
+            }
+            ammo.get(i).update();
+        }
+
         centerScreen();
     }
+
+
 
     private void rotateLeft() {
         this.angle -= this.ROTATIONSPEED;
@@ -148,8 +187,8 @@ public class Tank{
 
 
     private void checkBorder() {
-        if (x < 30) {
-            x = 30;
+        if (x < 40) {
+            x = 40;
         }
         if (x >= GameConstants.GAME_WORLD_WIDTH - 110) {
             x = GameConstants.GAME_WORLD_WIDTH - 110;
@@ -173,6 +212,9 @@ public class Tank{
         rotation.scale(.5,.5);
         rotation.rotate(Math.toRadians(angle), this.img.getWidth() / 2.0, this.img.getHeight() / 2.0);
         Graphics2D g2d = (Graphics2D) g;
+        for(int i = 0; i < ammo.size(); i++){
+            ammo.get(i).draw(g);
+        }
         g2d.drawImage(this.img, rotation, null);
         //g2d.rotate(Math.toRadians(angle), bounds.x + bounds.width/2, bounds.y + bounds.height/2);
 

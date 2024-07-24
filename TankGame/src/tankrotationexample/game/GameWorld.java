@@ -16,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -26,10 +27,12 @@ public class GameWorld extends JPanel implements Runnable {
     private BufferedImage world;
     private Tank t1;
     private Tank t2;
+
     private final Launcher lf;
     private long tick = 0;
 
     ArrayList<GameObject> gObjs = new ArrayList<>();
+
     private BufferedImage background;
 
     /**
@@ -103,7 +106,7 @@ public class GameWorld extends JPanel implements Runnable {
         this.lf.getJf().addKeyListener(tc1);
 
         t2 = new Tank(1875, 80, 0, 0, (short) 180, ResourceManager.getSprite("tank2"));
-        TankControl tc2 = new TankControl(t2, KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_ENTER);
+        TankControl tc2 = new TankControl(t2, KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_SLASH);
         this.lf.getJf().addKeyListener(tc2);
 
         background = ResourceManager.getSprite("background");

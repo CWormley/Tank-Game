@@ -1,6 +1,9 @@
 package tankrotationexample;
 
+import tankrotationexample.game.Bullet;
 import tankrotationexample.game.GameWorld;
+import tankrotationexample.game.Poolable;
+import tankrotationexample.game.ResourcePool;
 import tankrotationexample.menus.EndGamePanel;
 import tankrotationexample.menus.StartMenuPanel;
 import javax.swing.*;
@@ -97,6 +100,7 @@ public class Launcher {
 
     public static void main(String[] args) {
         ResourceManager.loadAssets();
+        ResourcePools.addPool("bullet", new ResourcePool<Bullet>("bullet", Bullet.class, 500).fillPool(500));
         (new Launcher()).initUIComponents();
     }
 }
