@@ -3,14 +3,10 @@ package tankrotationexample.game;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class UBWall extends GameObject {
-    float x, y;
-    BufferedImage img;
+public class BWall extends GameObject {
 
-    public UBWall(float x, float y, BufferedImage img){
-        this.x = x;
-        this.y = y;
-        this.img = img;
+    public BWall(float x, float y, BufferedImage img){
+        super(x, y, img);
     }
 
     public void draw (Graphics g){

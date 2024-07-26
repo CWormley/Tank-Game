@@ -9,15 +9,14 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  *
  * @author anthony-pc
  */
-public class Tank{
+public class Tank extends GameObject{
 
-    private float x;
-    private float y;
     private float screen_x;
     private float screen_y;
     private float vx;
@@ -27,12 +26,14 @@ public class Tank{
     private float R = 3;
     private float ROTATIONSPEED = 2.0f;
 
-    private BufferedImage img;
     private boolean UpPressed;
     private boolean DownPressed;
     private boolean RightPressed;
     private boolean LeftPressed;
     private boolean shootPressed;
+
+    public int tankID;
+
 
     private long coolDown  = 500;
     private long lastShot = 0;
@@ -40,14 +41,13 @@ public class Tank{
 
 
     Tank(float x, float y, float vx, float vy, float angle, BufferedImage img) {
-        this.x = x;
-        this.y = y;
+        super(x, y, img);
         this.screen_x = x;
         this.screen_y = y;
         this.vx = vx;
         this.vy = vy;
-        this.img = img;
         this.angle = angle;
+        this.tankID = new Random().nextInt(1000);
     }
 
     public float getScreen_x() {
@@ -104,7 +104,7 @@ public class Tank{
 
 
 
-    void update() {
+    void update(GameWorld gw) {
         if (this.UpPressed) {
             this.moveForwards();
         }
@@ -125,19 +125,24 @@ public class Tank{
         if (this.shootPressed && currentTime > this.coolDown + this.lastShot) {
             this.lastShot = currentTime;
             var p = ResourcePools.getPooledInstance("bullet");
-            p.initObject(x +this.img.getWidth()/4f,y +this.img.getHeight()/4f,angle);
+            p.initObject(x +this.img.getWidth()/4f,y +this.img.getHeight()/4f,angle, tankID);
             this.ammo.add((Bullet)p);
+            gw.addGameObject((Bullet)p);
         }
 
         for(int i = 0; i < ammo.size(); i++){
-            if(ammo.get(i).colision) {
+            if(ammo.get(i).collision) {
+                gw.removeGameObject(ammo.get(i));
                 ammo.remove(ammo.get(i));
+
                 break;
             }
             ammo.get(i).update();
         }
 
         centerScreen();
+
+        this.hitBox.setLocation((int)this.x, (int)this.y);
     }
 
 
@@ -207,7 +212,8 @@ public class Tank{
     }
 
 
-    void drawImage(Graphics g) {
+    @Override
+    public void draw(Graphics g) {
         AffineTransform rotation = AffineTransform.getTranslateInstance(x, y);
         rotation.scale(.5,.5);
         rotation.rotate(Math.toRadians(angle), this.img.getWidth() / 2.0, this.img.getHeight() / 2.0);
@@ -216,7 +222,17 @@ public class Tank{
             ammo.get(i).draw(g);
         }
         g2d.drawImage(this.img, rotation, null);
-        //g2d.rotate(Math.toRadians(angle), bounds.x + bounds.width/2, bounds.y + bounds.height/2);
+    }
 
+    public void collision(GameObject obj){
+        if(obj instanceof Bullet) {
+            if(((Bullet) obj).tankID != this.tankID){
+                System.out.println("Tank hit");
+            }
+        }
+    }
+
+    public int getId() {
+        return this.tankID;
     }
 }

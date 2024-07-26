@@ -4,13 +4,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Star extends GameObject {
-    float x, y;
-    BufferedImage img;
-
     public Star(float x, float y, BufferedImage img){
-        this.x = x;
-        this.y = y;
-        this.img = img;
+        super(x, y, img);
+
     }
 
     public void draw (Graphics g){

@@ -33,6 +33,12 @@ public class GameWorld extends JPanel implements Runnable {
 
     ArrayList<GameObject> gObjs = new ArrayList<>();
 
+    ArrayList<GameObject> gObjsRefined = new ArrayList<>();
+    ArrayList<GameObject> gObjsMovable = new ArrayList<>();
+
+
+
+
     private BufferedImage background;
 
     /**
@@ -47,8 +53,9 @@ public class GameWorld extends JPanel implements Runnable {
         try {
             while (true) {
                 this.tick++;
-                this.t1.update(); // update tank
-                this.t2.update(); // update tank
+                this.t1.update(this); // update tank
+                this.t2.update(this); // update tank
+                this.checkCollision();
                 this.repaint();   // redraw game
                 /*
                  * Sleep for 1000/144 ms (~6.9ms). This is done to have our 
@@ -60,6 +67,22 @@ public class GameWorld extends JPanel implements Runnable {
             System.out.println(ignored);
         }
     }
+
+    private void checkCollision() {
+        for(int i = 0; i < this.gObjsRefined.size(); i++) {
+            GameObject obj = this.gObjsRefined.get(i);
+            for(int j = 0; j < this.gObjsMovable.size(); j++){
+                GameObject obj2 = this.gObjsMovable.get(j);
+                if(obj == obj2){continue;}
+                if(obj.getHitBox().intersects(obj2.getHitBox())){
+                    obj2.collision(obj);
+                    obj.collision(obj2);
+
+                }
+            }
+        }
+    }
+
 
     /**
      * Reset game to its initial state.
@@ -93,6 +116,9 @@ public class GameWorld extends JPanel implements Runnable {
                     String gameItem = obj[col];
                     if(gameItem.equals("0")){continue;}
                     this.gObjs.add(GameObject.newInstance(gameItem, col * 40, row * 40));
+                    if(row !=0 && col != 0 && row != 24 && col != 32){
+                        this.gObjsRefined.add(this.gObjs.get(this.gObjs.size()-1));
+                    }
                 }
                 row++;
             }
@@ -104,10 +130,15 @@ public class GameWorld extends JPanel implements Runnable {
         t1 = new Tank(45, 80, 0, 0, (short) 0, ResourceManager.getSprite("tank1"));
         TankControl tc1 = new TankControl(t1, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_SPACE);
         this.lf.getJf().addKeyListener(tc1);
+        this.gObjsRefined.add(t1);
+        this.gObjsMovable.add(t1);
+
 
         t2 = new Tank(1875, 80, 0, 0, (short) 180, ResourceManager.getSprite("tank2"));
         TankControl tc2 = new TankControl(t2, KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_SLASH);
         this.lf.getJf().addKeyListener(tc2);
+        this.gObjsRefined.add(t2);
+        this.gObjsMovable.add(t1);
 
         background = ResourceManager.getSprite("background");
     }
@@ -135,13 +166,21 @@ public class GameWorld extends JPanel implements Runnable {
         for(int i = 0; i < this.gObjs.size(); i++){
             this.gObjs.get(i).draw(buffer);
         }
-        this.t1.drawImage(buffer);
-        this.t2.drawImage(buffer);
+        this.t1.draw(buffer);
+        this.t2.draw(buffer);
 
         this.displaySplitScreen(g2);
         this.displayMiniMap(g2);
 
 
+    }
+
+    public void addGameObject(GameObject g) {
+        this.gObjsMovable.add(g);
+    }
+
+    public void removeGameObject(GameObject g) {
+        this.gObjsMovable.remove(g);
     }
 
 

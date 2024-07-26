@@ -100,7 +100,9 @@ public class Launcher {
 
     public static void main(String[] args) {
         ResourceManager.loadAssets();
-        ResourcePools.addPool("bullet", new ResourcePool<Bullet>("bullet", Bullet.class, 500).fillPool(500));
+        ResourcePools.addPool("bullet",
+                new ResourcePool<Bullet>("bullet",
+                        Bullet.class, 500).fillPool(500));
         (new Launcher()).initUIComponents();
     }
 }

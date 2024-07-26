@@ -5,10 +5,9 @@ import tankrotationexample.GameConstants;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 public class Bullet extends GameObject implements Poolable {
-    private float x;
-    private float y;
     private float vx;
     private float vy;
     private float angle;
@@ -16,26 +15,25 @@ public class Bullet extends GameObject implements Poolable {
     private float R = 4;
     private float ROTATIONSPEED = 2.0f;
 
-    private BufferedImage img;
+    public boolean collision = false;
 
-    public boolean colision = false;
+    public int tankID;
 
-    Bullet(float x, float y, float angle, BufferedImage img) {
-        this.x = x;
-        this.y = y;
+    Bullet(float x, float y, float angle, BufferedImage img, int tankID) {
+        super(x, y, img);
         this.vx = 0;
         this.vy = 0;
         this.img = img;
         this.angle = angle;
+        this.tankID = tankID;
     }
 
     public Bullet(BufferedImage img) {
-        this.img = img;
+        super(0, 0, img);
         this.vx=0;
         this.vy=0;
-        this.x = 0;
-        this.y = 0;
         this.angle = 0;
+        this.tankID = -1;
     }
 
     private void rotateLeft() {
@@ -47,10 +45,10 @@ public class Bullet extends GameObject implements Poolable {
     }
 
     private void checkBorder() {
-        if (x < 40) {colision = true;}
-        if (x >= GameConstants.GAME_WORLD_WIDTH - 40) {colision = true;}
-        if (y < 40) {colision = true;}
-        if (y >= GameConstants.GAME_WORLD_HEIGHT - 40) {colision = true;}
+        if (x < 40) {collision = true;}
+        if (x >= GameConstants.GAME_WORLD_WIDTH - 40) {collision = true;}
+        if (y < 40) {collision = true;}
+        if (y >= GameConstants.GAME_WORLD_HEIGHT - 40) {collision = true;}
     }
 
 
@@ -60,6 +58,7 @@ public class Bullet extends GameObject implements Poolable {
         x += vx;
         y += vy;
         checkBorder();
+        this.hitBox.setLocation((int)x, (int)y);
     }
 
     @Override
@@ -79,15 +78,26 @@ public class Bullet extends GameObject implements Poolable {
     }
 
     @Override
-    public void initObject(float x, float y, float angle) {
+    public void initObject(float x, float y, float angle, int tankID) {
         this.x = x;
         this.y = y;
         this.angle = angle;
+        this.tankID = tankID;
     }
 
     @Override
     public void resetObject() {
         this.x = -5;
         this.y = -5;
+    }
+
+    public void collision(GameObject obj){
+        if(obj instanceof Tank){
+            if(((Tank) obj).getId() != this.tankID){
+                collision = true;
+                System.out.println("shot tank");
+            }
+        }else{collision = true;}
+
     }
 }

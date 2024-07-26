@@ -32,7 +32,7 @@ public class ResourceManager {
         ResourceManager.sprites.put("wall3", loadSprite("wall3.png"));
         ResourceManager.sprites.put("flower", loadSprite("flower.png"));
         ResourceManager.sprites.put("star", loadSprite("star.png"));
-        ResourceManager.sprites.put("ub_wall", loadSprite("ubwall.png"));
+        ResourceManager.sprites.put("bwall", loadSprite("bwall.png"));
         ResourceManager.sprites.put("bullet", loadSprite("bullet.png"));
 
 
