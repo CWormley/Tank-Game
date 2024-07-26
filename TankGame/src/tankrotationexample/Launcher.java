@@ -100,6 +100,7 @@ public class Launcher {
 
     public static void main(String[] args) {
         ResourceManager.loadAssets();
+        // create a new resource pool for bullets
         ResourcePools.addPool("bullet",
                 new ResourcePool<Bullet>("bullet",
                         Bullet.class, 500).fillPool(500));

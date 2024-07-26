@@ -3,10 +3,11 @@ package tankrotationexample.game;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+// Star class for the stars in the game
+//Power up type object
 public class Star extends GameObject {
     public Star(float x, float y, BufferedImage img){
         super(x, y, img);
-
     }
 
     public void draw (Graphics g){

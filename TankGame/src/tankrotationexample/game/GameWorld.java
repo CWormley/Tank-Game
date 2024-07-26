@@ -4,50 +4,45 @@ package tankrotationexample.game;
 import tankrotationexample.GameConstants;
 import tankrotationexample.Launcher;
 import tankrotationexample.ResourceManager;
-
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
  * @author anthony-pc
  */
-public class GameWorld extends JPanel implements Runnable {
+// GameWorld class
+// This class is used to create the game world
 
+public class GameWorld extends JPanel implements Runnable {
+// Variables for the game world
     private BufferedImage world;
     private Tank t1;
     private Tank t2;
-
     private final Launcher lf;
     private long tick = 0;
 
+    // Array list of game objects
     ArrayList<GameObject> gObjs = new ArrayList<>();
-
     ArrayList<GameObject> gObjsRefined = new ArrayList<>();
     ArrayList<GameObject> gObjsMovable = new ArrayList<>();
-
-
-
-
     private BufferedImage background;
 
-    /**
-     *
-     */
+    // Constructor
     public GameWorld(Launcher lf) {
         this.lf = lf;
     }
 
+    // run method for the game world
+    //update game objects and check for collisions
+    //redraw game
     @Override
     public void run() {
         try {
@@ -68,6 +63,7 @@ public class GameWorld extends JPanel implements Runnable {
         }
     }
 
+    // check for collisions between game objects
     private void checkCollision() {
         for(int i = 0; i < this.gObjsRefined.size(); i++) {
             GameObject obj = this.gObjsRefined.get(i);
@@ -75,9 +71,11 @@ public class GameWorld extends JPanel implements Runnable {
                 GameObject obj2 = this.gObjsMovable.get(j);
                 if(obj == obj2){continue;}
                 if(obj.getHitBox().intersects(obj2.getHitBox())){
-                    obj2.collision(obj);
-                    obj.collision(obj2);
-
+                    if(obj2 instanceof Bullet){
+                        ((Bullet)obj2).hit(obj);
+                        continue;
+                    }
+                    ((Tank)obj2).collision();
                 }
             }
         }
@@ -102,7 +100,7 @@ public class GameWorld extends JPanel implements Runnable {
                 GameConstants.GAME_WORLD_HEIGHT,
                 BufferedImage.TYPE_INT_RGB);
 
-
+        // Load map from file
         int row = 0;
         InputStreamReader isr = new InputStreamReader
                 (Objects.requireNonNull(
@@ -126,7 +124,7 @@ public class GameWorld extends JPanel implements Runnable {
             throw new RuntimeException(e);
         }
 
-
+    // Create tanks
         t1 = new Tank(45, 80, 0, 0, (short) 0, ResourceManager.getSprite("tank1"));
         TankControl tc1 = new TankControl(t1, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_SPACE);
         this.lf.getJf().addKeyListener(tc1);
@@ -143,6 +141,7 @@ public class GameWorld extends JPanel implements Runnable {
         background = ResourceManager.getSprite("background");
     }
 
+    // display mini map
     private void displayMiniMap(Graphics2D onScreenPanel) {
         BufferedImage miniMap = this.world.getSubimage(0,0, GameConstants.GAME_WORLD_WIDTH, GameConstants.GAME_WORLD_HEIGHT);
         AffineTransform scaler = AffineTransform.getTranslateInstance(GameConstants.GAME_SCREEN_WIDTH/2-(GameConstants.GAME_WORLD_WIDTH*.15)/2, 0);
@@ -150,6 +149,7 @@ public class GameWorld extends JPanel implements Runnable {
         onScreenPanel.drawImage(miniMap, scaler,null);
     }
 
+    // display split screen
     private void displaySplitScreen(Graphics2D onScreenPanel){
         BufferedImage lh = this.world.getSubimage((int)this.t1.getScreen_x(), (int)this.t1.getScreen_y(), GameConstants.GAME_SCREEN_WIDTH/2, GameConstants.GAME_SCREEN_HEIGHT);
         onScreenPanel.drawImage(lh, 0, 0, null);
@@ -157,6 +157,7 @@ public class GameWorld extends JPanel implements Runnable {
         onScreenPanel.drawImage(rh, GameConstants.GAME_SCREEN_WIDTH/2+4, 0, null);
     }
 
+    // paint component method for the game world
     @Override
     public void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
@@ -175,6 +176,7 @@ public class GameWorld extends JPanel implements Runnable {
 
     }
 
+    //add bullets to movable objects from tank class
     public void addGameObject(GameObject g) {
         this.gObjsMovable.add(g);
     }

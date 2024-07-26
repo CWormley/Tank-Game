@@ -15,6 +15,9 @@ import java.util.Random;
  *
  * @author anthony-pc
  */
+// Tank class that extends GameObject
+// Contains the tank's movement and shooting logic
+// Also contains the tank's collision logic
 public class Tank extends GameObject{
 
     private float screen_x;
@@ -22,24 +25,21 @@ public class Tank extends GameObject{
     private float vx;
     private float vy;
     private float angle;
-
     private float R = 3;
     private float ROTATIONSPEED = 2.0f;
-
     private boolean UpPressed;
     private boolean DownPressed;
     private boolean RightPressed;
     private boolean LeftPressed;
     private boolean shootPressed;
-
     public int tankID;
-
-
     private long coolDown  = 500;
     private long lastShot = 0;
+    // List of bullets
     List<Bullet> ammo = new ArrayList<Bullet>();
 
 
+    // Constructor for the Tank class
     Tank(float x, float y, float vx, float vy, float angle, BufferedImage img) {
         super(x, y, img);
         this.screen_x = x;
@@ -103,7 +103,8 @@ public class Tank extends GameObject{
     }
 
 
-
+    // Update method for the Tank class
+    // Contains the tank's movement and shooting logic
     void update(GameWorld gw) {
         if (this.UpPressed) {
             this.moveForwards();
@@ -146,7 +147,7 @@ public class Tank extends GameObject{
     }
 
 
-
+    //movement methods
     private void rotateLeft() {
         this.angle -= this.ROTATIONSPEED;
     }
@@ -171,6 +172,7 @@ public class Tank extends GameObject{
         checkBorder();
     }
 
+    //center the screen on the tank
     private void centerScreen(){
         this.screen_x = this.x - GameConstants.GAME_SCREEN_WIDTH/4f;
         this.screen_y = this.y - GameConstants.GAME_SCREEN_HEIGHT/2f;
@@ -190,7 +192,7 @@ public class Tank extends GameObject{
 
     }
 
-
+    //check collisoin with the border
     private void checkBorder() {
         if (x < 40) {
             x = 40;
@@ -211,7 +213,7 @@ public class Tank extends GameObject{
         return "x=" + x + ", y=" + y + ", angle=" + angle;
     }
 
-
+    //draw the tank
     @Override
     public void draw(Graphics g) {
         AffineTransform rotation = AffineTransform.getTranslateInstance(x, y);
@@ -224,13 +226,14 @@ public class Tank extends GameObject{
         g2d.drawImage(this.img, rotation, null);
     }
 
-    public void collision(GameObject obj){
-        if(obj instanceof Bullet) {
-            if(((Bullet) obj).tankID != this.tankID){
-                System.out.println("Tank hit");
-            }
-        }
+    //handle collision
+    public void collision(){
+        this.x= this.x - vx;
+        this.y = this.y - vy;
     }
+
+    protected void damage(){System.out.println("Damage detected");}
+
 
     public int getId() {
         return this.tankID;

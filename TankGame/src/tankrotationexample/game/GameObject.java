@@ -1,22 +1,28 @@
 package tankrotationexample.game;
 
 import tankrotationexample.ResourceManager;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+// GameObject class
+// This class is used to create a game object
+// This class is abstract and is extended by other classes
 public abstract class GameObject {
+    // Variables for the game object
     protected float x;
     protected float y;
     protected BufferedImage img;
     protected Rectangle hitBox;
 
+    // Constructor
     public GameObject(float x, float y, BufferedImage img){
         this.x = x;
         this.y = y;
         this.img = img;
-        this.hitBox = new Rectangle((int)x, (int)y, (int)(img.getWidth()*.5), (int)(img.getHeight()/.5));
+        this.hitBox = new Rectangle((int)x, (int)y, (int)(img.getWidth()*.5), (int)(img.getHeight()*.5));
     }
+
+    //Interpret map file and create objects
     public static GameObject newInstance(String type, float x, float y){
         return switch (type) {
             case "9" -> new Wall(x, y, ResourceManager.getSprite("wall1"));
@@ -29,13 +35,12 @@ public abstract class GameObject {
         };
     }
 
+    // draw the game object to the frame
     public abstract void draw (Graphics g);
 
     public Rectangle getHitBox(){
         return hitBox.getBounds();
     }
-
-    public void collision(GameObject obj){
-        System.out.println("Collision detected");
-    }
+    // damage method for the game object
+    protected void damage(){}
 }
