@@ -25,7 +25,7 @@ public class Tank extends GameObject{
     private float vx;
     private float vy;
     private float angle;
-    private float R = 3;
+    private float R = 2.5f;
     private float ROTATIONSPEED = 2.0f;
     private boolean UpPressed;
     private boolean DownPressed;
@@ -33,10 +33,17 @@ public class Tank extends GameObject{
     private boolean LeftPressed;
     private boolean shootPressed;
     public int tankID;
-    private long coolDown  = 500;
+    private long coolDown  = 400;
     private long lastShot = 0;
+    private long hitCount=0;
+
+    private float last_X;
+    private float last_Y;
+
+    private long powerUpTime = 0;
     // List of bullets
     List<Bullet> ammo = new ArrayList<Bullet>();
+
 
 
     // Constructor for the Tank class
@@ -48,6 +55,7 @@ public class Tank extends GameObject{
         this.vy = vy;
         this.angle = angle;
         this.tankID = new Random().nextInt(1000);
+        this.hitBox = new Rectangle((int)x, (int)y, img.getWidth()/4,img.getHeight()/4);
     }
 
     public float getScreen_x() {
@@ -106,6 +114,8 @@ public class Tank extends GameObject{
     // Update method for the Tank class
     // Contains the tank's movement and shooting logic
     void update(GameWorld gw) {
+        this.last_X = this.x;
+        this.last_Y = this.y;
         if (this.UpPressed) {
             this.moveForwards();
         }
@@ -133,7 +143,7 @@ public class Tank extends GameObject{
 
         for(int i = 0; i < ammo.size(); i++){
             if(ammo.get(i).collision) {
-                gw.removeGameObject(ammo.get(i));
+                gw.removeBullet(ammo.get(i));
                 ammo.remove(ammo.get(i));
 
                 break;
@@ -144,6 +154,14 @@ public class Tank extends GameObject{
         centerScreen();
 
         this.hitBox.setLocation((int)this.x, (int)this.y);
+
+        if(powerUpTime !=0){
+            if(System.currentTimeMillis() - powerUpTime > 5000){
+                powerUpTime = 0;
+                coolDown = 400;
+                System.out.println("Power up over");
+            }
+        }
     }
 
 
@@ -228,14 +246,34 @@ public class Tank extends GameObject{
 
     //handle collision
     public void collision(){
-        this.x= this.x - vx;
-        this.y = this.y - vy;
+        this.x= last_X;
+        this.y = last_Y;
     }
 
-    protected void damage(){System.out.println("Damage detected");}
+    protected void damage(GameWorld gm){
+        hitCount++;
+        if(hitCount == 3){
+            gm.GameOver(this);
+        }
+    }
 
 
     public int getId() {
         return this.tankID;
     }
+
+    public void resetTank(int x, int y, int angle){
+        this.x = x;
+        this.y = y;
+        this.angle = 0;
+        this.hitCount = 0;
+        }
+
+    public void flowerMode() {
+        this.coolDown = 200;
+        this.powerUpTime = System.currentTimeMillis();
+    }
 }
+
+
+

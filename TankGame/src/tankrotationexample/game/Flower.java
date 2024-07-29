@@ -15,5 +15,8 @@ public class Flower extends GameObject {
         g.drawImage(this.img, (int)this.x, (int)this.y, null);
     }
 
+    protected void damage(GameWorld gm) {
+        gm.removeGameObject(this);
+    }
 
 }

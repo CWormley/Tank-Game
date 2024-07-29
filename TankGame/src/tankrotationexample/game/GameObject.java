@@ -4,6 +4,7 @@ import tankrotationexample.ResourceManager;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+
 // GameObject class
 // This class is used to create a game object
 // This class is abstract and is extended by other classes
@@ -19,7 +20,7 @@ public abstract class GameObject {
         this.x = x;
         this.y = y;
         this.img = img;
-        this.hitBox = new Rectangle((int)x, (int)y, (int)(img.getWidth()*.5), (int)(img.getHeight()*.5));
+        this.hitBox = new Rectangle((int)x, (int)y, img.getWidth(),img.getHeight());
     }
 
     //Interpret map file and create objects
@@ -38,9 +39,8 @@ public abstract class GameObject {
     // draw the game object to the frame
     public abstract void draw (Graphics g);
 
-    public Rectangle getHitBox(){
-        return hitBox.getBounds();
-    }
+    public Rectangle getHitBox(){return hitBox.getBounds();}
+
     // damage method for the game object
-    protected void damage(){}
+    protected void damage(GameWorld gm){}
 }

@@ -30,6 +30,9 @@ public class ResourceManager {
         ResourceManager.sprites.put("tank2", loadSprite("tank2.png"));
         ResourceManager.sprites.put("title", loadSprite("title.png"));
         ResourceManager.sprites.put("background", loadSprite("background.png"));
+        ResourceManager.sprites.put("blue", loadSprite("blueEnd.png"));
+        ResourceManager.sprites.put("green", loadSprite("greenEnd.png"));
+        ResourceManager.sprites.put("end", loadSprite("blueEnd.png"));
         ResourceManager.sprites.put("wall1", loadSprite("wall1.png"));
         ResourceManager.sprites.put("wall2", loadSprite("wall2.png"));
         ResourceManager.sprites.put("wall3", loadSprite("wall3.png"));
@@ -37,7 +40,6 @@ public class ResourceManager {
         ResourceManager.sprites.put("star", loadSprite("star.png"));
         ResourceManager.sprites.put("bwall", loadSprite("bwall.png"));
         ResourceManager.sprites.put("bullet", loadSprite("bullet.png"));
-
 
     }
 
@@ -49,6 +51,9 @@ public class ResourceManager {
         return ResourceManager.sprites.get(key);
     }
 
+    public static void setSprite(String key, BufferedImage sprite) {
+        ResourceManager.sprites.put(key, sprite);
+    }
 
     //called in launcher
     public static void loadAssets(){

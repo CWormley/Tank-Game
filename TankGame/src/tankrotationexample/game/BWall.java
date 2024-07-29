@@ -17,8 +17,8 @@ public class BWall extends GameObject {
     }
 
     // damage method for the breakable wall object
-    protected void damage() {
-        System.out.println("Damage detected");
+    protected void damage(GameWorld gm) {
+        gm.removeGameObject(this);
     }
 
 

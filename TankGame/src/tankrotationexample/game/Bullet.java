@@ -85,16 +85,17 @@ public class Bullet extends GameObject implements Poolable {
     }
 
     // handle collisions
-    public void hit(GameObject obj){
+    public boolean hit(GameObject obj){
         if(obj instanceof Tank){
-            if(((Tank) obj).getId() != this.tankID){
+            if(((Tank)obj).getId() != this.tankID){
                 collision = true;
-                System.out.println("shot tank");
-                obj.damage(); // damage tank
+                return true;
+            }else{
+                return false;
             }
         }else{
-            collision = true;
-            obj.damage(); // damage wall or other object
+            collision = true;// damage wall or other object
+            return true;
         }
     }
 }

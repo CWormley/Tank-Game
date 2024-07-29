@@ -1,6 +1,7 @@
 package tankrotationexample.menus;
 
 import tankrotationexample.Launcher;
+import tankrotationexample.ResourceManager;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -15,25 +16,19 @@ public class EndGamePanel extends JPanel {
 
     public EndGamePanel(Launcher lf) {
         this.lf = lf;
-        try {
-            menuBackground = ImageIO.read(this.getClass().getClassLoader().getResource("title.png"));
-        } catch (IOException e) {
-            System.out.println("Error cant read menu background");
-            e.printStackTrace();
-            System.exit(-3);
-        }
+        menuBackground = ResourceManager.getSprite("end");
         this.setBackground(Color.BLACK);
         this.setLayout(null);
 
         JButton start = new JButton("Restart Game");
         start.setFont(new Font("Courier New", Font.BOLD, 24));
-        start.setBounds(150, 300, 250, 50);
+        start.setBounds(150, 600, 200, 50);
         start.addActionListener((actionEvent -> this.lf.setFrame("game")));
 
 
         JButton exit = new JButton("Exit");
         exit.setFont(new Font("Courier New", Font.BOLD, 24));
-        exit.setBounds(150, 400, 250, 50);
+        exit.setBounds(357, 600, 200, 50);
         exit.addActionListener((actionEvent -> this.lf.closeGame()));
 
         this.add(start);
@@ -42,7 +37,9 @@ public class EndGamePanel extends JPanel {
 
     @Override
     public void paintComponent(Graphics g) {
+        this.menuBackground = ResourceManager.getSprite("end");
         Graphics2D g2 = (Graphics2D) g;
         g2.drawImage(this.menuBackground, 0, 0, null);
     }
+
 }

@@ -29,6 +29,12 @@ public class GameWorld extends JPanel implements Runnable {
     private final Launcher lf;
     private long tick = 0;
 
+    private int winner;
+
+    private int numOfGames = 0;
+
+    private boolean gameOver = false;
+
     // Array list of game objects
     ArrayList<GameObject> gObjs = new ArrayList<>();
     ArrayList<GameObject> gObjsRefined = new ArrayList<>();
@@ -45,8 +51,9 @@ public class GameWorld extends JPanel implements Runnable {
     //redraw game
     @Override
     public void run() {
+        numOfGames++;
         try {
-            while (true) {
+            while (!gameOver){
                 this.tick++;
                 this.t1.update(this); // update tank
                 this.t2.update(this); // update tank
@@ -58,6 +65,16 @@ public class GameWorld extends JPanel implements Runnable {
                 */
                 Thread.sleep(1000 / 144);
             }
+
+            if(winner == 1){
+                ResourceManager.setSprite("end", ResourceManager.getSprite("blue"));
+            } else{
+                ResourceManager.setSprite("end", ResourceManager.getSprite("green"));
+            }
+            resetGame();
+            this.lf.setFrame("end");
+
+
         } catch (InterruptedException ignored) {
             System.out.println(ignored);
         }
@@ -72,7 +89,12 @@ public class GameWorld extends JPanel implements Runnable {
                 if(obj == obj2){continue;}
                 if(obj.getHitBox().intersects(obj2.getHitBox())){
                     if(obj2 instanceof Bullet){
-                        ((Bullet)obj2).hit(obj);
+                        if(((Bullet)obj2).hit(obj)){
+                            obj.damage(this);
+                        }
+                        if(obj instanceof Flower){
+                            flower((Bullet)obj2);
+                        }
                         continue;
                     }
                     ((Tank)obj2).collision();
@@ -87,8 +109,9 @@ public class GameWorld extends JPanel implements Runnable {
      */
     public void resetGame() {
         this.tick = 0;
-        this.t1.setX(300);
-        this.t1.setY(300);
+        this.t1.resetTank(45,80,0);
+        this.t2.resetTank(1875,80,180);
+
     }
 
     /**
@@ -136,7 +159,7 @@ public class GameWorld extends JPanel implements Runnable {
         TankControl tc2 = new TankControl(t2, KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_SLASH);
         this.lf.getJf().addKeyListener(tc2);
         this.gObjsRefined.add(t2);
-        this.gObjsMovable.add(t1);
+        this.gObjsMovable.add(t2);
 
         background = ResourceManager.getSprite("background");
     }
@@ -181,9 +204,35 @@ public class GameWorld extends JPanel implements Runnable {
         this.gObjsMovable.add(g);
     }
 
-    public void removeGameObject(GameObject g) {
+    public void removeBullet(GameObject g) {
         this.gObjsMovable.remove(g);
     }
+    public void removeGameObject(GameObject g) {
+        this.gObjsRefined.remove(g);
+        this.gObjs.remove(g);
+    }
+
+    public void GameOver(Tank t) {
+        this.gameOver = true;
+        if(t == t1){
+            System.out.println("winner is player 2");
+            winner = 2;
+        } else{
+            System.out.println("winner is player 1");
+            winner = 1;
+        }
+    }
+
+    public void flower(Bullet b) {
+        if(b.tankID == t1.tankID){
+            t1.flowerMode();
+        }
+        else{
+            t2.flowerMode();
+        }
+    }
+
+
 
 
 
