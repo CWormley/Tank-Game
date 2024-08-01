@@ -2,6 +2,7 @@ package tankrotationexample.menus;
 
 import tankrotationexample.Launcher;
 import tankrotationexample.ResourceManager;
+import tankrotationexample.game.Sound;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -13,6 +14,7 @@ public class EndGamePanel extends JPanel {
 
     private BufferedImage menuBackground;
     private final Launcher lf;
+    private Sound bg;
 
     public EndGamePanel(Launcher lf) {
         this.lf = lf;

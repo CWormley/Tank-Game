@@ -37,6 +37,8 @@ public class Tank extends GameObject{
     private long lastShot = 0;
     private long hitCount=0;
 
+    public long loses = 0;
+
     private float last_X;
     private float last_Y;
 
@@ -134,6 +136,8 @@ public class Tank extends GameObject{
 
         long currentTime = System.currentTimeMillis();
         if (this.shootPressed && currentTime > this.coolDown + this.lastShot) {
+            Sound s = ResourceManager.getSound("shoot");
+            s.play();
             this.lastShot = currentTime;
             var p = ResourcePools.getPooledInstance("bullet");
             p.initObject(x +this.img.getWidth()/4f,y +this.img.getHeight()/4f,angle, tankID);
@@ -253,7 +257,13 @@ public class Tank extends GameObject{
     protected void damage(GameWorld gm){
         hitCount++;
         if(hitCount == 3){
-            gm.GameOver(this);
+            loses++;
+            if(loses == 3) {
+                gm.GameOver(this);
+            }
+            else {
+                gm.newGame();
+            }
         }
     }
 

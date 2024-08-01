@@ -1,7 +1,9 @@
 package tankrotationexample;
 
+import tankrotationexample.game.Sound;
+
 import javax.imageio.ImageIO;
-import javax.sound.sampled.Clip;
+import javax.sound.sampled.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
@@ -14,7 +16,7 @@ import java.util.Objects;
 //like resources are stored in map, key is used to grab the resource
 public class ResourceManager {
     private final static Map<String, BufferedImage> sprites = new HashMap<>();
-    private final static Map<String, Clip> sounds = new HashMap<>();
+    private final static Map<String, Sound> sounds = new HashMap<>();
     private final static Map<String, List<BufferedImage>> animations = new HashMap<>();
 
     //construct a new ResourceManager object
@@ -22,6 +24,29 @@ public class ResourceManager {
         return ImageIO.read(Objects.requireNonNull(
                 ResourceManager.class.getClassLoader().getResource(path),
                 "Resource %s was not found: ".formatted(path)));
+    }
+    private static Sound loadSound(String path) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
+            AudioInputStream audio = AudioSystem.getAudioInputStream(
+                    Objects.requireNonNull(
+                    ResourceManager.class.getClassLoader().getResource(path),
+                    "Sound Resource %s was not found: ".formatted(path)));
+            Clip clip = AudioSystem.getClip();
+            clip.open(audio);
+            Sound sound = new Sound(clip);
+            ResourceManager.sounds.put(path, sound);
+            return sound;
+    }
+
+    public static void initSounds (){
+        try {
+            ResourceManager.sounds.put("background", loadSound("bg.wav"));
+            ResourceManager.sounds.put("start_background", loadSound("bg_start.wav"));
+            ResourceManager.sounds.put("shoot", loadSound("shoot.wav"));
+            ResourceManager.sounds.put("gameover", loadSound("gameover.wav"));
+
+        } catch (IOException | LineUnavailableException | UnsupportedAudioFileException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     //load all the sprites
@@ -44,11 +69,26 @@ public class ResourceManager {
     }
 
 
+
     public static BufferedImage getSprite(String key){
         if(!ResourceManager.sprites.containsKey(key)){
             throw new IllegalArgumentException("No sprite found with key " + key);
         }
         return ResourceManager.sprites.get(key);
+    }
+
+    public static Sound getSound(String key){
+        if(!ResourceManager.sounds.containsKey(key)){
+            throw new IllegalArgumentException("No sound found with key " + key);
+        }
+        return (ResourceManager.sounds.get(key));
+    }
+
+    public static List<BufferedImage> getAnimation(String key){
+        if(!ResourceManager.animations.containsKey(key)){
+            throw new IllegalArgumentException("No animation found with key " + key);
+        }
+        return ResourceManager.animations.get(key);
     }
 
     public static void setSprite(String key, BufferedImage sprite) {
@@ -60,10 +100,12 @@ public class ResourceManager {
         // load all assets
         try {
             initSprites();
+            initSounds();
         } catch (IOException e) {
             throw new RuntimeException("Failed to load assets", e);
         }
     }
+
 
 
 

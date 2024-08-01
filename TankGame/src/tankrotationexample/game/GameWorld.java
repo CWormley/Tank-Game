@@ -51,7 +51,12 @@ public class GameWorld extends JPanel implements Runnable {
     //redraw game
     @Override
     public void run() {
+        this.resetGame();
         numOfGames++;
+        Sound bg = ResourceManager.getSound("background");
+        bg.setVolume(0.2f);
+        bg.loop();
+        bg.play();
         try {
             while (!gameOver){
                 this.tick++;
@@ -71,7 +76,11 @@ public class GameWorld extends JPanel implements Runnable {
             } else{
                 ResourceManager.setSprite("end", ResourceManager.getSprite("green"));
             }
-            resetGame();
+            bg.stop();
+            bg = ResourceManager.getSound("start_background");
+            bg.setVolume(0.2f);
+            bg.loop();
+            bg.play();
             this.lf.setFrame("end");
 
 
@@ -221,6 +230,13 @@ public class GameWorld extends JPanel implements Runnable {
             System.out.println("winner is player 1");
             winner = 1;
         }
+    }
+
+    public void newGame() {
+        Sound gameover = ResourceManager.getSound("gameover");
+        gameover.setVolume(0.2f);
+        gameover.play();
+        this.resetGame();
     }
 
     public void flower(Bullet b) {
