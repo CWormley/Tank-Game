@@ -98,6 +98,11 @@ public class Launcher {
         this.jf.dispatchEvent(new WindowEvent(this.jf, WindowEvent.WINDOW_CLOSING));
     }
 
+    public void resetGame(){
+        this.gamePanel.gameOver = false;
+        this.gamePanel.resetMain();
+        this.setFrame("game");
+    }
     public static void main(String[] args) {
         ResourceManager.loadAssets();
         // create a new resource pool for bullets

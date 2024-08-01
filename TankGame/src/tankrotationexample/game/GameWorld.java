@@ -31,15 +31,15 @@ public class GameWorld extends JPanel implements Runnable {
 
     private int winner;
 
-    private int numOfGames = 0;
-
-    private boolean gameOver = false;
+    public boolean gameOver = false;
 
     // Array list of game objects
     ArrayList<GameObject> gObjs = new ArrayList<>();
     ArrayList<GameObject> gObjsRefined = new ArrayList<>();
     ArrayList<GameObject> gObjsMovable = new ArrayList<>();
     private BufferedImage background;
+    int x=0;
+    Sound bg = ResourceManager.getSound("background");
 
     // Constructor
     public GameWorld(Launcher lf) {
@@ -51,14 +51,12 @@ public class GameWorld extends JPanel implements Runnable {
     //redraw game
     @Override
     public void run() {
-        this.resetGame();
-        numOfGames++;
-        Sound bg = ResourceManager.getSound("background");
+        bg = ResourceManager.getSound("background");
         bg.setVolume(0.2f);
         bg.loop();
         bg.play();
         try {
-            while (!gameOver){
+            while (true){
                 this.tick++;
                 this.t1.update(this); // update tank
                 this.t2.update(this); // update tank
@@ -69,24 +67,40 @@ public class GameWorld extends JPanel implements Runnable {
                  * loop run at a fixed rate per/sec. 
                 */
                 Thread.sleep(1000 / 144);
+
+                if(this.gameOver){
+                    if(winner == 1){
+                        ResourceManager.setSprite("end", ResourceManager.getSprite("blue"));
+                    } else{
+                        ResourceManager.setSprite("end", ResourceManager.getSprite("green"));
+                    }
+                    bg.stop();
+                    bg = ResourceManager.getSound("start_background");
+                    bg.setVolume(0.2f);
+                    bg.loop();
+                    bg.play();
+                    this.lf.setFrame("end");;
+
+                }
             }
 
-            if(winner == 1){
-                ResourceManager.setSprite("end", ResourceManager.getSprite("blue"));
-            } else{
-                ResourceManager.setSprite("end", ResourceManager.getSprite("green"));
-            }
-            bg.stop();
-            bg = ResourceManager.getSound("start_background");
-            bg.setVolume(0.2f);
-            bg.loop();
-            bg.play();
-            this.lf.setFrame("end");
 
 
         } catch (InterruptedException ignored) {
             System.out.println(ignored);
         }
+    }
+
+    public void resetMain(){
+        this.resetGame();
+        this.t2.loses = 0;
+        this.t1.loses = 0;
+        bg.stop();
+        bg = ResourceManager.getSound("background");
+        bg.setVolume(0.2f);
+        bg.loop();
+        bg.play();
+
     }
 
     // check for collisions between game objects
@@ -103,6 +117,9 @@ public class GameWorld extends JPanel implements Runnable {
                         }
                         if(obj instanceof Flower){
                             flower((Bullet)obj2);
+                        }
+                        if(obj instanceof Star){
+                            star((Bullet)obj2);
                         }
                         continue;
                     }
@@ -245,6 +262,15 @@ public class GameWorld extends JPanel implements Runnable {
         }
         else{
             t2.flowerMode();
+        }
+    }
+
+    public void star(Bullet b) {
+        if(b.tankID == t1.tankID){
+            t1.starMode();
+        }
+        else{
+            t2.starMode();
         }
     }
 

@@ -275,13 +275,17 @@ public class Tank extends GameObject{
     public void resetTank(int x, int y, int angle){
         this.x = x;
         this.y = y;
-        this.angle = 0;
+        this.angle = angle;
         this.hitCount = 0;
         }
 
     public void flowerMode() {
         this.coolDown = 200;
         this.powerUpTime = System.currentTimeMillis();
+    }
+
+    public void starMode() {
+        this.hitCount--;
     }
 }
 
