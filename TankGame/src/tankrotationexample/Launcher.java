@@ -38,6 +38,8 @@ public class Launcher {
      */
     private CardLayout cl;
 
+    Thread game;
+
     public Launcher(){
         this.jf = new JFrame();             // creating a new JFrame object
         this.jf.setTitle("Tank Wars Game"); // setting the title of the JFrame window.
@@ -82,6 +84,9 @@ public class Launcher {
                 // not stuck executing the game loop.
                 (new Thread(this.gamePanel)).start();
             }
+            case "backTogame" -> {
+                this.jf.setSize(GameConstants.GAME_SCREEN_WIDTH, GameConstants.GAME_SCREEN_HEIGHT);
+            }
             case "end" ->
                 // set the size of the jFrame to the expected size for the end panel
                     this.jf.setSize(GameConstants.END_MENU_SCREEN_WIDTH, GameConstants.END_MENU_SCREEN_HEIGHT);
@@ -98,11 +103,8 @@ public class Launcher {
         this.jf.dispatchEvent(new WindowEvent(this.jf, WindowEvent.WINDOW_CLOSING));
     }
 
-    public void resetGame(){
-        this.gamePanel.gameOver = false;
-        this.gamePanel.resetMain();
-        this.setFrame("game");
-    }
+
+
     public static void main(String[] args) {
         ResourceManager.loadAssets();
         // create a new resource pool for bullets

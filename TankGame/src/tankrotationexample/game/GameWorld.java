@@ -38,8 +38,9 @@ public class GameWorld extends JPanel implements Runnable {
     ArrayList<GameObject> gObjsRefined = new ArrayList<>();
     ArrayList<GameObject> gObjsMovable = new ArrayList<>();
     private BufferedImage background;
-    int x=0;
     Sound bg = ResourceManager.getSound("background");
+    boolean running;
+    int check =1;
 
     // Constructor
     public GameWorld(Launcher lf) {
@@ -51,51 +52,46 @@ public class GameWorld extends JPanel implements Runnable {
     //redraw game
     @Override
     public void run() {
-        bg = ResourceManager.getSound("background");
-        bg.setVolume(0.2f);
-        bg.loop();
-        bg.play();
+        running = true;
+        this.resetMain();
         try {
-            while (true){
+            while (running) {
                 this.tick++;
                 this.t1.update(this); // update tank
                 this.t2.update(this); // update tank
                 this.checkCollision();
                 this.repaint();   // redraw game
                 /*
-                 * Sleep for 1000/144 ms (~6.9ms). This is done to have our 
-                 * loop run at a fixed rate per/sec. 
-                */
+                 * Sleep for 1000/144 ms (~6.9ms). This is done to have our
+                 * loop run at a fixed rate per/sec.
+                 */
                 Thread.sleep(1000 / 144);
 
-                if(this.gameOver){
-                    if(winner == 1){
+                if (this.gameOver) {
+                    running = false;
+                    if (winner == 1) {
                         ResourceManager.setSprite("end", ResourceManager.getSprite("blue"));
-                    } else{
+                    } else {
                         ResourceManager.setSprite("end", ResourceManager.getSprite("green"));
                     }
                     bg.stop();
-                    bg = ResourceManager.getSound("start_background");
-                    bg.setVolume(0.2f);
-                    bg.loop();
-                    bg.play();
-                    this.lf.setFrame("end");;
-
+                    lf.setFrame("end");
                 }
+
             }
-
-
+            System.out.println("exit");
 
         } catch (InterruptedException ignored) {
             System.out.println(ignored);
         }
+
     }
 
     public void resetMain(){
+        this.gameOver = false;
         this.resetGame();
         this.t2.loses = 0;
         this.t1.loses = 0;
-        bg.stop();
         bg = ResourceManager.getSound("background");
         bg.setVolume(0.2f);
         bg.loop();

@@ -8,4 +8,10 @@ public class Animation {
     private List<BufferedImage> frames;
     private int delay = 30;
     private boolean isRunning = false;
+
+    public Animation(float x, float y, List<BufferedImage> frames){
+
+
+    }
 }
+

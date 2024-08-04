@@ -137,6 +137,7 @@ public class Tank extends GameObject{
         long currentTime = System.currentTimeMillis();
         if (this.shootPressed && currentTime > this.coolDown + this.lastShot) {
             Sound s = ResourceManager.getSound("shoot");
+            s.setVolume(.2f);
             s.play();
             this.lastShot = currentTime;
             var p = ResourcePools.getPooledInstance("bullet");

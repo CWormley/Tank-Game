@@ -18,6 +18,10 @@ public class EndGamePanel extends JPanel {
 
     public EndGamePanel(Launcher lf) {
         this.lf = lf;
+        Sound bg = ResourceManager.getSound("start_background");
+        bg.setVolume(0.2f);
+        bg.loop();
+        bg.play();
         menuBackground = ResourceManager.getSprite("end");
         this.setBackground(Color.BLACK);
         this.setLayout(null);
@@ -25,7 +29,10 @@ public class EndGamePanel extends JPanel {
         JButton start = new JButton("Restart Game");
         start.setFont(new Font("Courier New", Font.BOLD, 24));
         start.setBounds(150, 600, 200, 50);
-        start.addActionListener((actionEvent -> this.lf.resetGame()));
+        start.addActionListener((actionEvent ->{
+            bg.stop();
+            lf.setFrame("game");
+        }));
 
 
         JButton exit = new JButton("Exit");
@@ -36,6 +43,8 @@ public class EndGamePanel extends JPanel {
         this.add(start);
         this.add(exit);
     }
+
+
 
     @Override
     public void paintComponent(Graphics g) {
