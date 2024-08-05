@@ -290,7 +290,7 @@ public class Tank extends GameObject{
     }
 
     public void starMode() {
-        this.hitCount--;
+        if(hitCount > 0){this.hitCount--;}
     }
 
     public BufferedImage getHealth (){
