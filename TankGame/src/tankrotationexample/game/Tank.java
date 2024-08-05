@@ -7,7 +7,9 @@ import tankrotationexample.ResourcePools;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -35,9 +37,9 @@ public class Tank extends GameObject{
     public int tankID;
     private long coolDown  = 400;
     private long lastShot = 0;
-    private long hitCount=0;
+    private int hitCount=0;
 
-    public long loses = 0;
+    public int loses = 0;
 
     private float last_X;
     private float last_Y;
@@ -58,6 +60,7 @@ public class Tank extends GameObject{
         this.angle = angle;
         this.tankID = new Random().nextInt(1000);
         this.hitBox = new Rectangle((int)x, (int)y, img.getWidth()/4,img.getHeight()/4);
+
     }
 
     public float getScreen_x() {
@@ -148,6 +151,7 @@ public class Tank extends GameObject{
 
         for(int i = 0; i < ammo.size(); i++){
             if(ammo.get(i).collision) {
+                gw.playAnimation(new Animation(ammo.get(i).x, ammo.get(i).y, ResourceManager.getAnimation("explosion_sm")));
                 gw.removeBullet(ammo.get(i));
                 ammo.remove(ammo.get(i));
 
@@ -287,6 +291,19 @@ public class Tank extends GameObject{
 
     public void starMode() {
         this.hitCount--;
+    }
+
+    public BufferedImage getHealth (){
+        List <BufferedImage> healthBar = new ArrayList<>(Arrays.asList(ResourceManager.getSprite("full"), ResourceManager.getSprite("oneHit"),ResourceManager.getSprite("twoHit"),ResourceManager.getSprite("threeHit")));
+        return healthBar.get(hitCount);
+    }
+
+    public BufferedImage getHeart (int place){
+        if(loses >= place){
+            return ResourceManager.getSprite("emptyHeart");
+        }
+        return ResourceManager.getSprite("heart");
+
     }
 }
 

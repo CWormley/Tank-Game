@@ -1,9 +1,12 @@
 package tankrotationexample.game;
 
 import tankrotationexample.GameConstants;
+import tankrotationexample.ResourceManager;
+
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 // Bullet class that extends GameObject and implements Poolable
 // This class is used to create a bullet object that is shot by the tank
@@ -34,6 +37,7 @@ public class Bullet extends GameObject implements Poolable {
         this.angle = 0;
         this.tankID = -1;
     }
+
 
     //check if the bullet has hit the border of the game world
     private void checkBorder() {

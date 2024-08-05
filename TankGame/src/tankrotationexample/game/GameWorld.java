@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -37,6 +38,8 @@ public class GameWorld extends JPanel implements Runnable {
     ArrayList<GameObject> gObjs = new ArrayList<>();
     ArrayList<GameObject> gObjsRefined = new ArrayList<>();
     ArrayList<GameObject> gObjsMovable = new ArrayList<>();
+
+    List<Animation> animations = new ArrayList<>();
     private BufferedImage background;
     Sound bg = ResourceManager.getSound("background");
     boolean running;
@@ -59,6 +62,9 @@ public class GameWorld extends JPanel implements Runnable {
                 this.tick++;
                 this.t1.update(this); // update tank
                 this.t2.update(this); // update tank
+                for(int i = 0 ; i < animations.size(); i++){
+                    this.animations.get(i).update();
+                }
                 this.checkCollision();
                 this.repaint();   // redraw game
                 /*
@@ -88,6 +94,7 @@ public class GameWorld extends JPanel implements Runnable {
     }
 
     public void resetMain(){
+        this.readMap();
         this.gameOver = false;
         this.resetGame();
         this.t2.loses = 0;
@@ -145,30 +152,6 @@ public class GameWorld extends JPanel implements Runnable {
                 GameConstants.GAME_WORLD_HEIGHT,
                 BufferedImage.TYPE_INT_RGB);
 
-        // Load map from file
-        int row = 0;
-        InputStreamReader isr = new InputStreamReader
-                (Objects.requireNonNull(
-                        GameWorld.class.getClassLoader().getResourceAsStream("map1.csv")
-                ));
-        try(BufferedReader mapReader = new BufferedReader(isr)){
-            while(mapReader.ready()){
-                String line = mapReader.readLine();
-                String[] obj = line.split(",");
-                for(int col = 0; col < obj.length; col++){
-                    String gameItem = obj[col];
-                    if(gameItem.equals("0")){continue;}
-                    this.gObjs.add(GameObject.newInstance(gameItem, col * 40, row * 40));
-                    if(row !=0 && col != 0 && row != 24 && col != 32){
-                        this.gObjsRefined.add(this.gObjs.get(this.gObjs.size()-1));
-                    }
-                }
-                row++;
-            }
-        }catch (IOException e){
-            throw new RuntimeException(e);
-        }
-
     // Create tanks
         t1 = new Tank(45, 80, 0, 0, (short) 0, ResourceManager.getSprite("tank1"));
         TankControl tc1 = new TankControl(t1, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_SPACE);
@@ -202,6 +185,21 @@ public class GameWorld extends JPanel implements Runnable {
         onScreenPanel.drawImage(rh, GameConstants.GAME_SCREEN_WIDTH/2+4, 0, null);
     }
 
+    private void displayHeath(Graphics2D onScreenPanel){
+        Rectangle bar = new Rectangle((int)(GameConstants.GAME_SCREEN_WIDTH/2-(GameConstants.GAME_WORLD_WIDTH*.15)/2),(int)(GameConstants.GAME_WORLD_HEIGHT*.15), (int) (GameConstants.GAME_WORLD_WIDTH*.15),75 );
+        onScreenPanel.setColor(Color.lightGray);
+        onScreenPanel.fill(bar);
+        onScreenPanel.draw(bar);
+        onScreenPanel.drawImage(t1.getHealth(), (int)(GameConstants.GAME_SCREEN_WIDTH/2-(GameConstants.GAME_WORLD_WIDTH*.15)/2),(int)(GameConstants.GAME_WORLD_HEIGHT*.15),null );
+        onScreenPanel.drawImage(t2.getHealth(), (GameConstants.GAME_SCREEN_WIDTH/2 +10),(int)(GameConstants.GAME_WORLD_HEIGHT*.15),null );
+        for(int n = 0; n < 3; n++){
+            onScreenPanel.drawImage(t1.getHeart(n), (int)(GameConstants.GAME_SCREEN_WIDTH/2-(GameConstants.GAME_WORLD_WIDTH*.15)/2) + (50*n),(int)(GameConstants.GAME_WORLD_HEIGHT*.15) + 30,null );
+            onScreenPanel.drawImage(t2.getHeart(n), (GameConstants.GAME_SCREEN_WIDTH/2 +10) + (50*n),(int)(GameConstants.GAME_WORLD_HEIGHT*.15)+30,null );
+
+        }
+
+    }
+
     // paint component method for the game world
     @Override
     public void paintComponent(Graphics g) {
@@ -212,11 +210,15 @@ public class GameWorld extends JPanel implements Runnable {
         for(int i = 0; i < this.gObjs.size(); i++){
             this.gObjs.get(i).draw(buffer);
         }
+        for(int i = 0 ; i < animations.size(); i++){
+            this.animations.get(i).render(buffer);
+        }
         this.t1.draw(buffer);
         this.t2.draw(buffer);
 
         this.displaySplitScreen(g2);
         this.displayMiniMap(g2);
+        this.displayHeath(g2);
 
 
     }
@@ -245,6 +247,8 @@ public class GameWorld extends JPanel implements Runnable {
         }
     }
 
+
+
     public void newGame() {
         Sound gameover = ResourceManager.getSound("gameover");
         gameover.setVolume(0.2f);
@@ -270,6 +274,34 @@ public class GameWorld extends JPanel implements Runnable {
         }
     }
 
+    public void playAnimation(Animation anim) {
+        this.animations.add(anim);
+    }
+
+    public void readMap(){
+        int row = 0;
+        InputStreamReader isr = new InputStreamReader
+                (Objects.requireNonNull(
+                        GameWorld.class.getClassLoader().getResourceAsStream("map1.csv")
+                ));
+        try(BufferedReader mapReader = new BufferedReader(isr)){
+            while(mapReader.ready()){
+                String line = mapReader.readLine();
+                String[] obj = line.split(",");
+                for(int col = 0; col < obj.length; col++){
+                    String gameItem = obj[col];
+                    if(gameItem.equals("0")){continue;}
+                    this.gObjs.add(GameObject.newInstance(gameItem, col * 40, row * 40));
+                    if(row !=0 && col != 0 && row != 24 && col != 32){
+                        this.gObjsRefined.add(this.gObjs.get(this.gObjs.size()-1));
+                    }
+                }
+                row++;
+            }
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
+    }
 
 
 
