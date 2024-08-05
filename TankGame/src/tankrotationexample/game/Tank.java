@@ -299,7 +299,7 @@ public class Tank extends GameObject{
     }
 
     public BufferedImage getHeart (int place){
-        if(loses >= place){
+        if(loses > place){
             return ResourceManager.getSprite("emptyHeart");
         }
         return ResourceManager.getSprite("heart");

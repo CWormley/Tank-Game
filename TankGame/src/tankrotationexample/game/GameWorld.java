@@ -186,15 +186,18 @@ public class GameWorld extends JPanel implements Runnable {
     }
 
     private void displayHeath(Graphics2D onScreenPanel){
-        Rectangle bar = new Rectangle((int)(GameConstants.GAME_SCREEN_WIDTH/2-(GameConstants.GAME_WORLD_WIDTH*.15)/2),(int)(GameConstants.GAME_WORLD_HEIGHT*.15), (int) (GameConstants.GAME_WORLD_WIDTH*.15),75 );
+        Rectangle bar = new Rectangle((int)(GameConstants.GAME_SCREEN_WIDTH/2-(GameConstants.GAME_WORLD_WIDTH*.15)/2),(int)(GameConstants.GAME_WORLD_HEIGHT*.15), (int) (GameConstants.GAME_WORLD_WIDTH*.15)/2,50 );
+        Rectangle bar2 = new Rectangle((GameConstants.GAME_SCREEN_WIDTH/2 + 4),(int)(GameConstants.GAME_WORLD_HEIGHT*.15), (int) (GameConstants.GAME_WORLD_WIDTH*.15)/2 -4,50 );
         onScreenPanel.setColor(Color.lightGray);
         onScreenPanel.fill(bar);
         onScreenPanel.draw(bar);
+        onScreenPanel.fill(bar2);
+        onScreenPanel.draw(bar2);
         onScreenPanel.drawImage(t1.getHealth(), (int)(GameConstants.GAME_SCREEN_WIDTH/2-(GameConstants.GAME_WORLD_WIDTH*.15)/2),(int)(GameConstants.GAME_WORLD_HEIGHT*.15),null );
         onScreenPanel.drawImage(t2.getHealth(), (GameConstants.GAME_SCREEN_WIDTH/2 +10),(int)(GameConstants.GAME_WORLD_HEIGHT*.15),null );
         for(int n = 0; n < 3; n++){
-            onScreenPanel.drawImage(t1.getHeart(n), (int)(GameConstants.GAME_SCREEN_WIDTH/2-(GameConstants.GAME_WORLD_WIDTH*.15)/2) + (50*n),(int)(GameConstants.GAME_WORLD_HEIGHT*.15) + 30,null );
-            onScreenPanel.drawImage(t2.getHeart(n), (GameConstants.GAME_SCREEN_WIDTH/2 +10) + (50*n),(int)(GameConstants.GAME_WORLD_HEIGHT*.15)+30,null );
+            onScreenPanel.drawImage(t1.getHeart(n), (int)(GameConstants.GAME_SCREEN_WIDTH/2-(GameConstants.GAME_WORLD_WIDTH*.15)/2) + (25*n),(int)(GameConstants.GAME_WORLD_HEIGHT*.15) + 25,null );
+            onScreenPanel.drawImage(t2.getHeart(n), (GameConstants.GAME_SCREEN_WIDTH/2 +10) + (25*n),(int)(GameConstants.GAME_WORLD_HEIGHT*.15)+25,null );
 
         }
 
