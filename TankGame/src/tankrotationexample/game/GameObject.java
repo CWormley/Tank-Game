@@ -30,8 +30,9 @@ public abstract class GameObject {
             case "8" -> new Wall(x, y, ResourceManager.getSprite("wall2"));
             case "7" -> new Wall(x, y, ResourceManager.getSprite("wall3"));
             case "4" -> new BWall (x, y, ResourceManager.getSprite("bwall"));
-            case "5" -> new Flower(x, y, ResourceManager.getSprite("flower"));
-            case "6" -> new Star(x, y, ResourceManager.getSprite("star"));
+            case "3" -> new PowerUp (x, y, ResourceManager.getSprite("power"), PowerUp.Types.POWER);
+            case "5" -> new PowerUp(x, y, ResourceManager.getSprite("flower"), PowerUp.Types.FLOWER);
+            case "6" -> new PowerUp(x, y, ResourceManager.getSprite("star"), PowerUp.Types.STAR);
             default -> throw new IllegalArgumentException("Unsupported type _> %s\n".formatted(type));
         };
     }

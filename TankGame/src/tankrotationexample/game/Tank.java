@@ -45,20 +45,24 @@ public class Tank extends GameObject{
     private float last_Y;
 
     private long powerUpTime = 0;
+
+
     // List of bullets
     List<Bullet> ammo = new ArrayList<Bullet>();
+
+    boolean power = false;
 
 
 
     // Constructor for the Tank class
-    Tank(float x, float y, float vx, float vy, float angle, BufferedImage img) {
+    Tank(float x, float y, float vx, float vy, float angle, BufferedImage img, int tankID) {
         super(x, y, img);
         this.screen_x = x;
         this.screen_y = y;
         this.vx = vx;
         this.vy = vy;
         this.angle = angle;
-        this.tankID = new Random().nextInt(1000);
+        this.tankID = tankID;
         this.hitBox = new Rectangle((int)x, (int)y, img.getWidth()/4,img.getHeight()/4);
 
     }
@@ -146,12 +150,25 @@ public class Tank extends GameObject{
             var p = ResourcePools.getPooledInstance("bullet");
             p.initObject(x +this.img.getWidth()/4f,y +this.img.getHeight()/4f,angle, tankID);
             this.ammo.add((Bullet)p);
+            if (power) {
+                System.out.println("power called");
+                var extra1 = ResourcePools.getPooledInstance("bullet");
+                var extra2 = ResourcePools.getPooledInstance("bullet");
+                extra1.initObject(x +this.img.getWidth()/4f,y +this.img.getHeight()/4f,angle - 20, tankID);
+                extra2.initObject(x +this.img.getWidth()/4f,y +this.img.getHeight()/4f,angle + 20, tankID);
+                this.ammo.add((Bullet)extra1);
+                this.ammo.add((Bullet)extra2);
+
+
+
+            }
             gw.addGameObject((Bullet)p);
         }
 
         for(int i = 0; i < ammo.size(); i++){
             if(ammo.get(i).collision) {
-                gw.playAnimation(new Animation(ammo.get(i).x, ammo.get(i).y, ResourceManager.getAnimation("explosion_sm")));
+                if(this.tankID == 1){gw.playAnimation(new Animation(ammo.get(i).x, ammo.get(i).y, ResourceManager.getAnimation("explosion_sm")));}
+                if(this.tankID == 2){gw.playAnimation(new Animation(ammo.get(i).x, ammo.get(i).y, ResourceManager.getAnimation("explosion_sm2")));}
                 gw.removeBullet(ammo.get(i));
                 ammo.remove(ammo.get(i));
 
@@ -168,6 +185,7 @@ public class Tank extends GameObject{
             if(System.currentTimeMillis() - powerUpTime > 5000){
                 powerUpTime = 0;
                 coolDown = 400;
+                power = false;
                 System.out.println("Power up over");
             }
         }
@@ -286,7 +304,8 @@ public class Tank extends GameObject{
 
     public void flowerMode() {
         this.coolDown = 200;
-        this.powerUpTime = System.currentTimeMillis();
+        powerUpTime =  System.currentTimeMillis();
+
     }
 
     public void starMode() {
@@ -304,6 +323,12 @@ public class Tank extends GameObject{
         }
         return ResourceManager.getSprite("heart");
 
+    }
+
+    public void powerMode() {
+        System.out.println("power on");
+        power = true;
+        powerUpTime =  System.currentTimeMillis();
     }
 }
 

@@ -118,12 +118,11 @@ public class GameWorld extends JPanel implements Runnable {
                         if(((Bullet)obj2).hit(obj)){
                             obj.damage(this);
                         }
-                        if(obj instanceof Flower){
-                            flower((Bullet)obj2);
+                        if(obj instanceof PowerUp){
+                            if(((Bullet) obj2).tankID == 1) {((PowerUp)obj).usePower(t1);
+                            }else{((PowerUp)obj).usePower(t2);}
                         }
-                        if(obj instanceof Star){
-                            star((Bullet)obj2);
-                        }
+
                         continue;
                     }
                     ((Tank)obj2).collision();
@@ -153,14 +152,14 @@ public class GameWorld extends JPanel implements Runnable {
                 BufferedImage.TYPE_INT_RGB);
 
     // Create tanks
-        t1 = new Tank(45, 80, 0, 0, (short) 0, ResourceManager.getSprite("tank1"));
+        t1 = new Tank(45, 80, 0, 0, (short) 0, ResourceManager.getSprite("tank1"), 1);
         TankControl tc1 = new TankControl(t1, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_SPACE);
         this.lf.getJf().addKeyListener(tc1);
         this.gObjsRefined.add(t1);
         this.gObjsMovable.add(t1);
 
 
-        t2 = new Tank(1875, 80, 0, 0, (short) 180, ResourceManager.getSprite("tank2"));
+        t2 = new Tank(1875, 80, 0, 0, (short) 180, ResourceManager.getSprite("tank2"), 2);
         TankControl tc2 = new TankControl(t2, KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_SLASH);
         this.lf.getJf().addKeyListener(tc2);
         this.gObjsRefined.add(t2);
@@ -267,6 +266,14 @@ public class GameWorld extends JPanel implements Runnable {
         }
         else{
             t2.starMode();
+        }
+    }
+    public void power(Bullet b) {
+        if(b.tankID == t1.tankID){
+            t1.powerMode();
+        }
+        else{
+            t2.powerMode();
         }
     }
 

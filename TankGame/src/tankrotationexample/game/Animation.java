@@ -7,7 +7,7 @@ import java.util.List;
 public class Animation {
     private float x,y;
     private List<BufferedImage> frames;
-    private int delay = 30;
+    private int delay = 40;
     private boolean isRunning = false;
     private long timeSinceLastUpdate = 0;
 
@@ -25,7 +25,6 @@ public class Animation {
         long currentTime = System.currentTimeMillis();
         if(timeSinceLastUpdate + delay <= currentTime){
             this.currentFrame++;
-            System.out.println(currentFrame);
             if(this.frames.size() == currentFrame){isRunning =false;}
             this.timeSinceLastUpdate = currentTime;
         }

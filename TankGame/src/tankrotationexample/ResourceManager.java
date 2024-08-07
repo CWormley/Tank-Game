@@ -19,6 +19,8 @@ public class ResourceManager {
 
     private final static Map<String, Integer> animInfo = new HashMap<>(){{
         put("explosion_sm", 6);
+        put("explosion_sm2", 6);
+
 
     }};
 
@@ -92,12 +94,7 @@ public class ResourceManager {
         ResourceManager.sprites.put("oneHit", loadSprite("oneHit.png"));
         ResourceManager.sprites.put("twoHit", loadSprite("twoHit.png"));
         ResourceManager.sprites.put("threeHit", loadSprite("threeHit.png"));
-
-
-
-
-
-
+        ResourceManager.sprites.put("power", loadSprite("power.png"));
     }
 
 
