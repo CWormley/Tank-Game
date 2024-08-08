@@ -20,6 +20,7 @@ public class ResourceManager {
     private final static Map<String, Integer> animInfo = new HashMap<>(){{
         put("explosion_sm", 6);
         put("explosion_sm2", 6);
+        put("sparkle", 11);
 
 
     }};

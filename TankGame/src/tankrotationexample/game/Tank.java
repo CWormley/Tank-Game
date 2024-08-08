@@ -46,6 +46,8 @@ public class Tank extends GameObject{
 
     private long powerUpTime = 0;
 
+    private long animDelay = 0;
+
 
     // List of bullets
     List<Bullet> ammo = new ArrayList<Bullet>();
@@ -182,6 +184,18 @@ public class Tank extends GameObject{
         this.hitBox.setLocation((int)this.x, (int)this.y);
 
         if(powerUpTime !=0){
+            if(animDelay + 450 < System.currentTimeMillis()) {
+                for(int i = 0; i < 5; i++){
+
+                    int random1 = (int) ((Math.random() * (45 - 25)) + 25);
+                    int random2 = (int) ((Math.random() * (45 - 25)) + 25);
+                    int posX = (int) (this.x + random2 *(Math.pow(-1, random2)));
+                    int posY = (int) (this.y + random1 *(Math.pow(-1, random1)));
+                    gw.playAnimation(new Animation(posX, posY, ResourceManager.getAnimation("sparkle")));
+                    System.out.println(posX + ", " + posY);
+                }
+                animDelay = System.currentTimeMillis();
+            }
             if(System.currentTimeMillis() - powerUpTime > 5000){
                 powerUpTime = 0;
                 coolDown = 400;
@@ -279,9 +293,9 @@ public class Tank extends GameObject{
 
     protected void damage(GameWorld gm){
         hitCount++;
-        if(hitCount == 3){
+        if(hitCount ==3){
             loses++;
-            if(loses == 3) {
+            if(loses ==3) {
                 gm.GameOver(this);
             }
             else {

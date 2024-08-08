@@ -81,7 +81,12 @@ public class GameWorld extends JPanel implements Runnable {
                         ResourceManager.setSprite("end", ResourceManager.getSprite("green"));
                     }
                     bg.stop();
+                    bg = ResourceManager.getSound("start_background");
+                    bg.setVolume(0.2f);
+                    bg.loop();
+                    bg.play();
                     lf.setFrame("end");
+
                 }
 
             }
@@ -94,6 +99,7 @@ public class GameWorld extends JPanel implements Runnable {
     }
 
     public void resetMain(){
+        bg.stop();
         this.readMap();
         this.gameOver = false;
         this.resetGame();
